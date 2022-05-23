@@ -9,6 +9,15 @@ VIRTUAL_HEIGHT = 288
 local background = love.graphics.newImage('background.png')
 local ground = love.graphics.newImage('ground.png')
 
+local backgroundScroll = 0
+local groundScroll = 0
+
+local BACKGROUND_SCROLL_S = 25
+local GROUND_SCROLL_S = 60
+
+local BACKGROUND_L_P = 413
+local GROUND_L_P = 512
+
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -26,7 +35,8 @@ function love.resize(w, h)
 end
 
 function love.update(dt)
-
+    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
+    groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
 end
 
 function love.keypressed(key)
@@ -37,8 +47,8 @@ end
 
 function love.draw()
     push:start()
-    love.graphics.draw(background, 0, 0)
-    love.graphics.draw(ground, 0, VIRTUAL_HEIGHT-16)
+    love.graphics.draw(background, -backgroundScroll, 0)
+    love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT-16)
 
     love.graphics.printf(
         'Hello Flappy bird!',
