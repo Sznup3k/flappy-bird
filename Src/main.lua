@@ -1,5 +1,9 @@
 push = require 'push'
 
+Class = require 'class'
+
+require 'bird'
+
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
@@ -28,6 +32,8 @@ function love.load()
         resizable = true,
         vsync = true
     })
+
+    bird = Bird()
 end
 
 function love.resize(w, h)
@@ -47,15 +53,11 @@ end
 
 function love.draw()
     push:start()
+    
     love.graphics.draw(background, -backgroundScroll, 0)
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT-16)
 
-    love.graphics.printf(
-        'Hello Flappy bird!',
-        0,
-        VIRTUAL_HEIGHT/2-12,
-        VIRTUAL_WIDTH,
-        'center'
-    )
+    bird:render()
+
     push:finish()
 end
