@@ -2,7 +2,9 @@ push = require 'push'
 
 Class = require 'class'
 
-require 'bird'
+require 'Bird'
+
+require 'PipePair'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -17,7 +19,7 @@ local backgroundScroll = 0
 local groundScroll = 0
 
 local BACKGROUND_SCROLL_S = 25
-local GROUND_SCROLL_S = 60
+GROUND_SCROLL_S = 60
 
 local BACKGROUND_L_P = 413
 local GROUND_L_P = 512
@@ -34,6 +36,12 @@ function love.load()
     })
 
     bird = Bird()
+
+    pipePairs = {}
+
+    pipeTimer = 0
+
+    lastY = math.random(20,80)
 
     love.keyboard.keyspressed = {}
 end
@@ -62,7 +70,28 @@ function love.update(dt)
     backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
     groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
 
+    pipeTimer = pipeTimer + dt
+
+    if pipeTimer > 3 then
+        y = math.max(34, math.min(lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
+        lastY = y
+
+        table.insert(pipePairs, PipePair(y))
+
+        pipeTimer = 0
+    end
+
     bird:update(dt)
+
+    for k, pair in pairs(pipePairs) do
+        pair:update(dt)
+    end
+
+    for k, pair in pairs(pipePairs) do
+        if pair.remove then
+            table.remove(pipePairs, k)
+        end
+    end
 
     love.keyboard.keyspressed = {}
 end
@@ -71,6 +100,11 @@ function love.draw()
     push:start()
     
     love.graphics.draw(background, -backgroundScroll, 0)
+
+    for k, pair in pairs(pipePairs) do
+        pair:render()
+    end
+
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT-16)
 
     bird:render(dt)
