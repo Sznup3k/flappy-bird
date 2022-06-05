@@ -12,11 +12,21 @@ function Bird:init()
     self.dy = 0
 end
 
+function Bird:collides(pipe)
+    if self.x + self.width - 4 >= pipe.x and self.x + 4 <= pipe.x + pipe.width then
+        if self.y + self.height - 4 >= pipe.y and self.y + 4 <= pipe.y + pipe.height then 
+            return true
+        end
+    end
+
+    return false
+end
+
 function Bird:update(dt)
     self.dy = self.dy + GRAVITY * dt
 
     if keyPressed('space') then
-        self.dy = -4
+        self.dy = -3.5
     end
     
     self.y = self.y + self.dy

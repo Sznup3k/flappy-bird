@@ -41,6 +41,8 @@ function love.load()
 
     pipeTimer = 0
 
+    scrolling = true
+
     lastY = math.random(20,80)
 
     love.keyboard.keyspressed = {}
@@ -67,29 +69,37 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
-    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
-    groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
+    if scrolling then
+        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
+        groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
 
-    pipeTimer = pipeTimer + dt
+        pipeTimer = pipeTimer + dt
 
-    if pipeTimer > 3 then
-        y = math.max(34, math.min(lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
-        lastY = y
+        if pipeTimer > 3 then
+            y = math.max(34, math.min(lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
+            lastY = y
 
-        table.insert(pipePairs, PipePair(y))
+            table.insert(pipePairs, PipePair(y))
 
-        pipeTimer = 0
-    end
+            pipeTimer = 0
+        end
 
-    bird:update(dt)
+        bird:update(dt)
 
-    for k, pair in pairs(pipePairs) do
-        pair:update(dt)
-    end
+        for k, pair in pairs(pipePairs) do
+            pair:update(dt)
 
-    for k, pair in pairs(pipePairs) do
-        if pair.remove then
-            table.remove(pipePairs, k)
+            for i, pipe in pairs(pair.pipes) do
+                if bird:collides(pipe) then
+                    scrolling = false
+                end
+            end 
+        end
+
+        for k, pair in pairs(pipePairs) do
+            if pair.remove then
+                table.remove(pipePairs, k)
+            end
         end
     end
 
