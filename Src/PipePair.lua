@@ -19,6 +19,8 @@ function PipePair:init(y)
     }
 
     self.remove = false
+
+    self.socred = false
 end
 
 function PipePair:update(dt)

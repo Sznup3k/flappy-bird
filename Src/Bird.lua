@@ -29,9 +29,9 @@ function Bird:update(dt)
         self.dy = -3.5
     end
     
-    self.y = self.y + self.dy
+    self.y = math.max(self.y + self.dy, 0)
 end
 
-function Bird:render(dt)
+function Bird:render()
     love.graphics.draw(self.image, self.x, self.y)
 end
