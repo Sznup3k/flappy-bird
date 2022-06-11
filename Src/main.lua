@@ -10,6 +10,7 @@ require 'StateMachine'
 require 'states/PlayState'
 require 'states/ScoreState'
 require 'states/titleScreenState'
+require 'states/CountdownState'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -58,6 +59,7 @@ function love.load()
 
     gStateMachine = StateMachine {
         ['title'] = function() return TitleScreenState() end,
+        ['countdown'] = function() return CountdownState() end,
         ['play'] = function() return PlayState() end,
         ['score'] = function() return ScoreState() end
     }
@@ -83,6 +85,10 @@ function love.keypressed(key)
 
     if key == 'escape' then
         love.event.quit()
+    end
+
+    if key == 'f3' then
+        enableFPS = enableFPS == 0 and 1 or 0
     end
 end
 
@@ -135,5 +141,13 @@ function love.draw()
 
     love.graphics.draw(ground, -groundScroll, VIRTUAL_HEIGHT-16)
 
+    if enableFPS == 1 then displayFPS() end
+
     push:finish()
+end
+
+function displayFPS()
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(245/255, 0/255, 0/255, 255/255)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 2, 2)
 end

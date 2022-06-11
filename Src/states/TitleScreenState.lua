@@ -13,7 +13,7 @@ function TitleScreenState:enter() end
 
 function TitleScreenState:update(dt)
     if keyPressed('enter') or keyPressed('return') then
-        gStateMachine:change('play')
+        gStateMachine:change('countdown')
     end
 end
 
