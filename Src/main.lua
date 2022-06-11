@@ -1,3 +1,10 @@
+--[[
+    My Flappy Bird game from the GD50 course, Lecture 1
+
+    Credits:
+        - GD50 course (https://www.youtube.com/watch?v=3IdOCxHGMIo&list=PLhQjrBD2T383Vx9-4vJYFsJbvZ_D17Qzh&index=19)
+]]
+
 push = require 'push'
 
 Class = require 'class'
@@ -30,12 +37,21 @@ GROUND_SCROLL_S = 60
 local BACKGROUND_L_P = 413
 local GROUND_L_P = 512
 
-local playing = true
-
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
     love.window.setTitle('Flappy bird')
+
+    sounds = {
+        ['jump'] = love.audio.newSource('jump.wav', 'static'),
+        ['score'] = love.audio.newSource('score.wav', 'static'),
+        ['hurt'] = love.audio.newSource('hurt.wav', 'static'),
+        ['explosion'] = love.audio.newSource('explosion.wav', 'static'),
+        ['music'] = love.audio.newSource('music.mp3', 'static')
+    }
+
+    sounds['music']:setLooping(true)
+    sounds['music']:play()
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
@@ -49,14 +65,6 @@ function love.load()
     hugeFont = love.graphics.newFont('flappy.ttf', 56)
     love.graphics.setFont(flappyFont)
 
-    --bird = Bird()
-
-    --pipePairs = {}
-
-    --pipeTimer = 0
-
-    --lastY = math.random(20,80)
-
     gStateMachine = StateMachine {
         ['title'] = function() return TitleScreenState() end,
         ['countdown'] = function() return CountdownState() end,
@@ -65,13 +73,14 @@ function love.load()
     }
     gStateMachine:change('title')
 
-    love.keyboard.keyspressed = {}
+    love.keyboard.keyspressed = {} -- part of the keyPressed function
 end
 
 function love.resize(w, h)
     push:resize(w, h)
 end
 
+-- function to check for single keyboard inputs
 function keyPressed(key)
     if love.keyboard.keyspressed[key] then
         return true
@@ -93,41 +102,10 @@ function love.keypressed(key)
 end
 
 function love.update(dt)
-    if playing then
-        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
-        groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
+    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
+    groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
 
-        gStateMachine.current:update(dt)
-
-        --[[pipeTimer = pipeTimer + dt
-
-        if pipeTimer > 3 then
-            y = math.max(34, math.min(lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
-            lastY = y
-
-            table.insert(pipePairs, PipePair(y))
-
-            pipeTimer = 0
-        end
-
-        bird:update(dt)
-
-        for k, pair in pairs(pipePairs) do
-            pair:update(dt)
-
-            for i, pipe in pairs(pair.pipes) do
-                if bird:collides(pipe) then
-                    playing = false
-                end
-            end 
-        end
-
-        for k, pair in pairs(pipePairs) do
-            if pair.remove then
-                table.remove(pipePairs, k)
-            end
-        end]]
-    end
+    gStateMachine.current:update(dt)
 
     love.keyboard.keyspressed = {}
 end

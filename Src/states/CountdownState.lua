@@ -1,6 +1,7 @@
+-- Countdown state
 CountdownState = Class{__includes = BaseState}
 
-local COUNTDOWN_TIME = 0.8
+local COUNTDOWN_TIME = 0.75
 
 function CountdownState:enter() end
 

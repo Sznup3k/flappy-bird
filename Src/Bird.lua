@@ -27,6 +27,8 @@ function Bird:update(dt)
 
     if keyPressed('space') then
         self.dy = -3.5
+
+        sounds['jump']:play()
     end
     
     self.y = math.max(self.y + self.dy, 0)

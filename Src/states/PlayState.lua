@@ -1,3 +1,4 @@
+-- Playing state
 PlayState = Class{__includes =  BaseState}
 
 PIPE_SPEED = 60
@@ -24,6 +25,7 @@ end
 function PlayState:update(dt)
     self.pipeTimer = self.pipeTimer + dt
 
+    -- spawn pipes 
     if self.pipeTimer > 3 then
         local y = math.max(34, math.min(self.lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
         self.lastY = y
@@ -33,8 +35,10 @@ function PlayState:update(dt)
         self.pipeTimer = 0
     end
 
+    -- bird update
     self.bird:update(dt)
 
+    -- (all) pipes update
     for k, pair in pairs(self.pipePairs) do
         pair:update(dt)
 
@@ -42,12 +46,17 @@ function PlayState:update(dt)
             if self.bird.x > pair.x + PIPE_WIDTH then
                 self.score = self.score + 1
                 pair.scored = true
+
+                sounds['score']:play()
             end
         end
 
         for i, pipe in pairs(pair.pipes) do
             if self.bird:collides(pipe) then
                 gStateMachine:change('score', {score = self.score})
+
+                sounds['explosion']:play()
+                sounds['hurt']:play()
             end
         end 
     end
@@ -58,19 +67,26 @@ function PlayState:update(dt)
         end
     end
 
+    -- check if bird touches the ground
     if self.bird.y >= VIRTUAL_HEIGHT - 16 then
         gStateMachine:change('score', {score = self.score})
+
+        sounds['explosion']:play()
+        sounds['hurt']:play()
     end 
 end
 
 function PlayState:render()
+    -- render (all) pipes
     for k, pair in pairs(self.pipePairs) do
         pair:render()
     end
 
+    -- render current score
     love.graphics.setFont(flappyFont)
     love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
 
+    -- render bird
     self.bird:render()
 end
 
