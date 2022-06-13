@@ -22,7 +22,7 @@ require 'states/CountdownState'
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 
-VIRTUAL_WIDTH = 512
+VIRTUAL_WIDTH = 512 --162
 VIRTUAL_HEIGHT = 288
 
 local background = love.graphics.newImage('background.png')
@@ -73,7 +73,12 @@ function love.load()
     }
     gStateMachine:change('title')
 
-    love.keyboard.keyspressed = {} -- part of the keyPressed function
+    pause = false
+
+    
+    keyboard = {}   -- part of the keyPressed function
+    
+    mouse = {}   -- part of the mousePressed function
 end
 
 function love.resize(w, h)
@@ -82,7 +87,15 @@ end
 
 -- function to check for single keyboard inputs
 function keyPressed(key)
-    if love.keyboard.keyspressed[key] then
+    if keyboard[key] then
+        return true
+    else
+        return false
+    end
+end
+
+function mousePressed(button)
+    if mouse[button] then
         return true
     else
         return false
@@ -90,7 +103,7 @@ function keyPressed(key)
 end
 
 function love.keypressed(key)
-    love.keyboard.keyspressed[key] = true
+    keyboard[key] = true
 
     if key == 'escape' then
         love.event.quit()
@@ -99,15 +112,27 @@ function love.keypressed(key)
     if key == 'f3' then
         enableFPS = enableFPS == 0 and 1 or 0
     end
+
+    if key == 'p' then
+        pause = pause == false and true or false
+    end
+end
+
+function love.mousepressed(x, y, button)
+    mouse[button] = true
 end
 
 function love.update(dt)
-    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
-    groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
+    if not pause then
+        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_S * dt) % BACKGROUND_L_P
+        groundScroll = (groundScroll + GROUND_SCROLL_S * dt) % GROUND_L_P
 
-    gStateMachine.current:update(dt)
+        gStateMachine.current:update(dt)
+    end
 
-    love.keyboard.keyspressed = {}
+    keyboard = {}
+
+    mouse = {}
 end
 
 function love.draw()

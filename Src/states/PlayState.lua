@@ -20,19 +20,23 @@ function PlayState:init()
     self.score = 0
 
     self.lastY = math.random(20, 80)
+
+    self.pipeInterval = math.random(2, 3)
 end
 
 function PlayState:update(dt)
     self.pipeTimer = self.pipeTimer + dt
 
     -- spawn pipes 
-    if self.pipeTimer > 3 then
+    if self.pipeTimer > self.pipeInterval then
         local y = math.max(34, math.min(self.lastY + math.random(-30, 30), VIRTUAL_HEIGHT - 120 - 16 - 34))
         self.lastY = y
 
         table.insert(self.pipePairs, PipePair(y))
 
         self.pipeTimer = 0
+
+        self.pipeInterval = math.random(2, 3)
     end
 
     -- bird update
@@ -82,12 +86,12 @@ function PlayState:render()
         pair:render()
     end
 
-    -- render current score
-    love.graphics.setFont(flappyFont)
-    love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
-
     -- render bird
     self.bird:render()
+
+    -- render current score
+    love.graphics.setFont(flappyFont)
+    love.graphics.print('Score: ' .. tostring(self.score), 8, 8)    
 end
 
 function PlayState:exit() end
