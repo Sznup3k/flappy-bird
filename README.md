@@ -1,4 +1,4 @@
-# flappy-bird
+# Flappy Bird
 
 ## This is my code for flappy bird in lua using LÖVE2D. Everything is strongly inspired or copied from the [GD50 course Lecture 1.](https://youtu.be/3IdOCxHGMIo)<br>
 
