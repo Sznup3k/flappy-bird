@@ -7,7 +7,7 @@
 *(visualization)*<br>
 
 ## Installation instructions for the users
-**This guide is for the installation on windows. If you are on a machine with a different system go to the [LÖVE2D wiki](https://love2d.org/wiki/Getting_Started).** <br>
+**This guide is for the installation on windows. If you are on a machine with a different system go to the [LÖVE2D wiki](https://love2d.org/wiki/Getting_Started).** <br><br>
 First install the LÖVE2D framework from the official [LÖVE2D page](https://love2d.org). Next download the `Src` folder from this repo.
 Then create a shortcut and in the path box put `"[LOVE installation path]\love.exe\" "[Src installation path]\Src\"`, which in my case looks like this: 
 `"C:\Program Files\LOVE\love.exe" "C:\Games\GD50\Flappy_bird-1\Src"`. If you want a more detailed guide or you are not using Windows go to the [LÖVE2D wiki](https://love2d.org/wiki/Getting_Started).
